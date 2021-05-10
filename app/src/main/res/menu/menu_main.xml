@@ -8,6 +8,11 @@
         android:title="@string/get_location"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_get_location_older"
+        android:orderInCategory="100"
+        android:title="@string/get_location_older"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_watch_location"
         android:orderInCategory="100"
         android:title="Watch Location"

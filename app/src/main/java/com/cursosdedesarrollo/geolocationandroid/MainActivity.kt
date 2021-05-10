@@ -1,7 +1,10 @@
 package com.cursosdedesarrollo.geolocationandroid
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -17,7 +20,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LocationListener {
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     private lateinit var locationCallback: LocationCallback
 
@@ -170,9 +173,40 @@ class MainActivity : AppCompatActivity() {
             clearWatchLocation()
             return true
         }
+        if (id == R.id.action_get_location_older) {
+            getLocationOlder()
+            return true
+        }
         return super.onOptionsItemSelected(item)
     }
+    private lateinit var locationManager: LocationManager
+    private val locationPermissionCode = 2
+    //define the listener
+    private val locationListener = object : android.location.LocationListener {
 
+        override fun onLocationChanged(location: Location) {
+            val posicion =  "Longitud: " + location.longitude + ":Latitud: " + location.latitude
+            texto!!.text = posicion
+        }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+            Log.d("app","status = $status")
+        }
+
+
+    }
+    private fun getLocationOlder(){
+
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+        }
+        if (hasGps){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 5f, locationListener)
+        }
+
+    }
     private fun watchLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -208,6 +242,7 @@ class MainActivity : AppCompatActivity() {
         mFusedLocationClient?.removeLocationUpdates(locationCallback)
 
     }
+    /*
     override fun onResume() {
         super.onResume()
         watchLocation()
@@ -218,5 +253,12 @@ class MainActivity : AppCompatActivity() {
         clearWatchLocation()
     }
 
+     */
+
     override fun onPointerCaptureChanged(hasCapture: Boolean) {}
+    override fun onLocationChanged(location: Location) {
+        val posicion =  "Longitud: " + location.longitude + ":Latitud: " + location.latitude
+        texto!!.text = posicion
+
+    }
 }

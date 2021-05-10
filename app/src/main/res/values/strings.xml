@@ -3,4 +3,5 @@
     <string name="action_settings">Settings</string>
     <string name="get_location">Get Location</string>
     <string name="pulsa_el_bot_n_get_location">Pulsa el botón Get Location</string>
+    <string name="get_location_older">Get location older</string>
 </resources>
